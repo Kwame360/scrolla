@@ -318,7 +318,7 @@ export default function CollegeBookFinder() {
 
       {/* Book Details Dialog */}
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogContent className="w-full max-w-xs sm:max-w-md md:max-w-2xl max-h-[80vh] overflow-y-auto">
+        <DialogContent className="w-full max-w-[90vw] sm:max-w-md md:max-w-2xl max-h-[80vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle className="text-xl font-montserrat font-bold">{selectedBook?.title}</DialogTitle>
             {selectedBook?.author_name && (

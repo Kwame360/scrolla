@@ -56,7 +56,7 @@ export default function Navbar({
   };
 
   return (
-    <nav ref={navRef} className="relative z-20 w-full bg-white/90 shadow-sm">
+    <nav ref={navRef} className="sticky top-0 relative z-20 w-full bg-white/90 shadow-sm">
       <div className="flex items-center justify-between px-16 py-4">
         <Link href="/" className="text-orange-500 font-kavoon text-2xl font-bold">Scrolla</Link>
         {/* Hamburger for mobile */}

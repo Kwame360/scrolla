@@ -41,12 +41,6 @@ export default function AboutPage() {
           <p className="font-montserrat text-gray-700 mb-4">
             Scrolla is built by a passionate team of developers, designers, and educators who believe in open access to knowledge. We are always looking for feedback and ways to improve the platform.
           </p>
-          <ul className="font-montserrat text-gray-700">
-            <li><span className="font-semibold">Jane Doe</span> – Founder & Product Lead</li>
-            <li><span className="font-semibold">John Smith</span> – Lead Developer</li>
-            <li><span className="font-semibold">Aisha Patel</span> – UX/UI Designer</li>
-            <li><span className="font-semibold">Carlos Ruiz</span> – Community Manager</li>
-          </ul>
         </section>
       </main>
     </div>
