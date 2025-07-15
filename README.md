@@ -1,4 +1,4 @@
-# Scrolla - College Student Book Finder App
+Scrolla - College Student Book Finder App
 
 ## 📚 What is Scrolla?
 
