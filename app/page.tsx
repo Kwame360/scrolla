@@ -11,6 +11,8 @@ import { Badge } from "@/components/ui/badge"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Separator } from "@/components/ui/separator"
+import Link from "next/link";
+import Navbar from "@/components/navbar";
 
 interface Book {
   key: string
@@ -47,6 +49,24 @@ export default function CollegeBookFinder() {
   const [detailsLoading, setDetailsLoading] = useState(false)
   const [searchType, setSearchType] = useState("title")
   const [sortBy, setSortBy] = useState("relevance")
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  // Add state for selected category and collection
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [selectedCollection, setSelectedCollection] = useState<string | null>(null);
+
+  // Filter books based on selected category/collection
+  const filteredBooks = books.filter((book) => {
+    let match = true;
+    if (selectedCategory) {
+      match = book.subject?.some((s) => s.toLowerCase().includes(selectedCategory.toLowerCase()));
+    }
+    if (selectedCollection) {
+      // For demo, just match collection name in title
+      match = match && book.title.toLowerCase().includes(selectedCollection.toLowerCase());
+    }
+    return match;
+  });
 
   const searchBooks = async (query: string, type = "title") => {
     if (!query.trim()) return
@@ -242,38 +262,6 @@ export default function CollegeBookFinder() {
         >
           <div className="absolute inset-0 bg-black/50"></div>
 
-          {/* Navigation */}
-          <nav className="relative z-10 flex items-center justify-between px-6 py-4">
-            <div className="text-orange-500 font-kavoon text-2xl font-bold">Scrolla</div>
-
-            <div className="hidden md:flex items-center space-x-8">
-              <a
-                href="#"
-                className="text-white font-montserrat font-medium hover:text-orange-300 transition-colors flex items-center gap-2"
-              >
-                <Home className="w-4 h-4" />
-                Academic Books
-              </a>
-              <a href="#" className="text-white font-montserrat font-medium hover:text-orange-300 transition-colors">
-                Categories
-              </a>
-              <a href="#" className="text-white font-montserrat font-medium hover:text-orange-300 transition-colors">
-                Collections
-              </a>
-              <a href="#" className="text-white font-montserrat font-medium hover:text-orange-300 transition-colors">
-                About
-              </a>
-            </div>
-
-            <Button className="bg-orange-500 hover:bg-orange-600 text-white font-montserrat font-medium px-6 py-2 rounded-full">
-              Sign Up
-            </Button>
-
-            <Button variant="ghost" size="sm" className="md:hidden text-white">
-              <Menu className="w-6 h-6" />
-            </Button>
-          </nav>
-
           {/* Hero Content */}
           <div className="relative z-10 flex flex-col items-center justify-center h-full px-6 text-center">
             <h1 className="text-white font-kavoon text-4xl md:text-6xl lg:text-7xl mb-8 max-w-4xl leading-tight">
@@ -281,7 +269,10 @@ export default function CollegeBookFinder() {
             </h1>
 
             {/* Search Bar */}
-            <div className="bg-white rounded-full p-2 flex items-center gap-2 w-full max-w-4xl shadow-2xl">
+            <form
+              onSubmit={handleSearch}
+              className="bg-white rounded-full p-2 flex items-center gap-2 w-full max-w-4xl shadow-2xl"
+            >
               <div className="flex items-center gap-2 px-4 py-3 flex-1">
                 <Search className="w-5 h-5 text-gray-400" />
                 <Input
@@ -291,8 +282,8 @@ export default function CollegeBookFinder() {
                   className="border-none bg-transparent font-montserrat text-lg placeholder:text-gray-400 focus-visible:ring-0"
                 />
               </div>
-
-              <div className="border-l border-gray-200 px-4 py-3">
+              {/* Desktop: Show dropdown and text button */}
+              <div className="hidden md:flex border-l border-gray-200 px-4 py-3">
                 <Select value={searchType} onValueChange={setSearchType}>
                   <SelectTrigger className="border-none bg-transparent font-montserrat w-32 focus:ring-0">
                     <SelectValue />
@@ -304,15 +295,23 @@ export default function CollegeBookFinder() {
                   </SelectContent>
                 </Select>
               </div>
-
-              <Button
-                onClick={handleSearch}
+              {/* Mobile: Icon button only, Desktop: Text button */}
+              <button
+                type="submit"
                 disabled={loading}
-                className="bg-orange-500 hover:bg-orange-600 text-white font-montserrat font-medium px-8 py-3 rounded-full"
+                className="flex md:hidden items-center justify-center bg-orange-500 hover:bg-orange-600 text-white rounded-full p-3 transition-colors disabled:opacity-50"
+                aria-label="Search"
+              >
+                <Search className="w-5 h-5" />
+              </button>
+              <Button
+                type="submit"
+                disabled={loading}
+                className="hidden md:inline-flex bg-orange-500 hover:bg-orange-600 text-white font-montserrat font-medium px-8 py-3 rounded-full"
               >
                 {loading ? "Searching..." : "Search"}
               </Button>
-            </div>
+            </form>
           </div>
         </div>
       </header>
@@ -445,18 +444,18 @@ export default function CollegeBookFinder() {
       </Dialog>
 
       {/* Search Results */}
-      {books.length > 0 && (
+      {filteredBooks.length > 0 && (
         <section className="py-16 px-6">
           <div className="max-w-7xl mx-auto">
             <div className="text-center mb-12">
               <h2 className="font-kavoon text-3xl md:text-4xl text-gray-800 mb-4">Search Results</h2>
               <p className="font-montserrat text-gray-600 text-lg max-w-2xl mx-auto">
-                Found {books.length} books matching your search criteria
+                Found {filteredBooks.length} books matching your search criteria
               </p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-              {books.map((book) => (
+              {filteredBooks.map((book) => (
                 <BookCard key={book.key} book={book} />
               ))}
             </div>
